@@ -15,6 +15,6 @@
         android:layout_height="20dp"
         android:gravity="center"
         android:text="ImageName"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
 </LinearLayout>

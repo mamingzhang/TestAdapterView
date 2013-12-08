@@ -81,7 +81,7 @@ public class MainActivity extends Activity
 			}
 			
 			viewHolder.imageView.setImageResource(imageIds[position]);
-			viewHolder.textView.setText("Image "+position);
+			viewHolder.textView.setText("Image"+position);
 			
 			return convertView;
 		}

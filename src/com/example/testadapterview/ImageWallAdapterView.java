@@ -20,7 +20,6 @@ public class ImageWallAdapterView extends AdapterView<ListAdapter> implements
 	
 	private int widthPerChildView;
 	private int heightPerChildView;
-	private int childCountPerScreen;
 	private int scrollOffsetX;
 	private int marginBetweenChild;
 	
@@ -123,16 +122,11 @@ public class ImageWallAdapterView extends AdapterView<ListAdapter> implements
 			measureChild(childView, widthMeasureSpec, heightMeasureSpec);
 			
 			widthPerChildView = childView.getMeasuredWidth(); 
-			heightPerChildView = childView.getMeasuredHeight(); 
-
-			childCountPerScreen = (getMeasuredWidth() - getPaddingLeft() - getPaddingRight())
-					/ widthPerChildView; 			
+			heightPerChildView = childView.getMeasuredHeight(); 		
 		}
 		
 		int beginChildX, endChildX;
-		
-		Log.v("mmz", "onlayout scrollOffsetX : "+scrollOffsetX);
-		
+				
 		beginChildX = (Math.abs(scrollOffsetX) - getPaddingLeft()) / widthPerChildView;
 		endChildX = (Math.abs(scrollOffsetX) + getMeasuredWidth() - getPaddingLeft() + widthPerChildView) / widthPerChildView;
 		beginChildX = Math.max(0, beginChildX);
@@ -140,8 +134,6 @@ public class ImageWallAdapterView extends AdapterView<ListAdapter> implements
 		endChildX = Math.max(0, endChildX);
 		endChildX = Math.min(mListAdapter.getCount() - 1, endChildX);
 		
-		Log.v("mmz", "beginChildX : "+beginChildX);
-		Log.v("mmz", "endChildX : "+endChildX);
 		for(int index = beginChildX; index <= endChildX; index++)
 		{
 			View childView = null;
@@ -202,7 +194,6 @@ public class ImageWallAdapterView extends AdapterView<ListAdapter> implements
 			float distanceY)
 	{
 		// TODO Auto-generated method stub
-		Log.v("mmz", "onScroll : "+distanceX);
 		if(mListAdapter == null || mListAdapter.getCount() == 0)
 		{
 			scrollOffsetX = 0;
@@ -217,14 +208,13 @@ public class ImageWallAdapterView extends AdapterView<ListAdapter> implements
 			tmpScrollOffsetX = 0;
 		}
 		else if (tmpScrollOffsetX > getPaddingLeft() + getPaddingRight() + mListAdapter.getCount() * widthPerChildView
-				+ (mListAdapter.getCount() - 1) * marginBetweenChild)
+				+ (mListAdapter.getCount() - 1) * marginBetweenChild - getWidth())
 		{
 			tmpScrollOffsetX = getPaddingLeft() + getPaddingRight() + mListAdapter.getCount() * widthPerChildView
 					+ (mListAdapter.getCount() - 1) * marginBetweenChild - getWidth();
 		}
 		
 		scrollOffsetX = -tmpScrollOffsetX;
-		Log.v("mmz", "scrollOffsetX : "+scrollOffsetX);
 		
 		requestLayout();
 
@@ -249,25 +239,13 @@ public class ImageWallAdapterView extends AdapterView<ListAdapter> implements
 	@Override
 	public boolean onTouchEvent(MotionEvent event)
 	{
-		if (mListAdapter == null)
+		if (mListAdapter == null || mListAdapter.getCount() == 0)
 		{
-			return true;
-		}
-		gestureDetector.onTouchEvent(event);
-
-		if (event.getAction() == MotionEvent.ACTION_UP)
-		{ // 在手指抬起时调用onUp方法
-			onUp();
+			return false;
 		}
 		
+		gestureDetector.onTouchEvent(event);
+		
 		return true;
-	}
-
-	private void onUp()
-	{
-//		int index = (int) (Math.abs(scrollOffsetX) / widthPerChildView);
-//		index += (Math.abs(scrollOffsetX) - index * widthPerChildView) > widthPerChildView / 2 ? 1 : 0;
-//		scrollOffsetX = scrollOffsetX > 0 ? index * widthPerChildView : -1 * index * widthPerChildView;
-//		requestLayout();
 	}
 }
